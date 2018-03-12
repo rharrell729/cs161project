@@ -4,11 +4,20 @@ import numpy as np
 arr = np.zeros((2048, 2048), dtype=int)
 
 #cut partitions A at character i and re-appends the two.
-def cut(A):
+def cut(A,i):
+	A = A[i:] +  A[:i]
+	return A
 
-#CLCS iterates from 1 to m, cutting A and then calling LCS on the re-formed string.
+#CLCS iterates from 1 to m, cutting A and then calling LCS on the re-formed string, updating the value of longest each time LCS returns a higher value.
 def CLCS(A,B):
-	for i in r
+	longest = 0
+	m = len(A)
+	for i in range(0,m):
+		A = cut(A,i)
+		interim = LCS(A,B)
+		if interim > longest:
+			longest = interim
+	return longest
 
 def LCS(A,B):
 	m = len(A)
@@ -29,7 +38,7 @@ def main():
 	
 	for l in sys.stdin:
 		A,B = l.split()
-		print LCS(A,B)
+		print CLCS(A,B)
 	return
 
 if __name__ == '__main__':
