@@ -3,6 +3,13 @@ import numpy as np
 
 arr = np.zeros((2048, 2048), dtype=int)
 
+#cut partitions A at character i and re-appends the two.
+def cut(A):
+
+#CLCS iterates from 1 to m, cutting A and then calling LCS on the re-formed string.
+def CLCS(A,B):
+	for i in r
+
 def LCS(A,B):
 	m = len(A)
 	n = len(B)
