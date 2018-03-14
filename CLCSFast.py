@@ -3,7 +3,18 @@ import numpy as np
 
 arr = np.zeros((2048, 2048), dtype=int)
 
-def LCS(A,B):
+#recursive method
+def FINDSHORTESTPATHS(A,B, p,l,u)
+	if u−l ≤ 1 return
+	mid ← (l +u)/2
+	p[mid] ← SINGLESHORTESTPATH(A,B,mid, p[l], p[u])
+#store mid for use as bounds (l and u) in next recursive step. How to store it?? 	
+	FINDSHORTESTPATHS(A,B, p,l,mid)
+	FINDSHORTESTPATHS(A,B, p,mid,u)
+
+
+#LCS needs to be modified to only check the relevant paths: the nested for loops should only check items within the bounds of the shortest paths explored prior (stored in the singleshortestpath method). We might need to update the arguments in 'range' each time we call singleshortest
+def SINGLESHORTESTPATH(A,B,mid,p[l],p[u]):
 	m = len(A)
 	n = len(B)
 
@@ -22,7 +33,13 @@ def main():
 	
 	for l in sys.stdin:
 		A,B = l.split()
-		print LCS(A,B)
+		m = len(A)
+#create placeholder for the values of the paths		
+		p = [] 
+#		print LCS(A,B)
+#call recursive method
+		FINDSHORTESTPATHS(A,B,p,0,m)
+
 	return
 
 if __name__ == '__main__':
