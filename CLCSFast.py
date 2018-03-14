@@ -11,6 +11,7 @@ arr = np.zeros((2048, 2048), dtype=int)
 p=[None]*20
 
 #recursive method
+#p and l are int indices
 def FINDSHORTESTPATHS(A,B, p,l,u):
     if (u-l) <= 1:
         return 
