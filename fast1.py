@@ -1,16 +1,9 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 14 14:04:33 2018
-
-@author: wenyijones
-"""
-
 import sys
 import numpy as np
+np.set_printoptions(threshold=np.nan)
 
-matrix = np.zeros((41,21), dtype=int)
-ghosts = np.zeros((41,21), dtype=int)
+matrix = np.zeros((4001,2001), dtype=int)
+ghosts = np.zeros((4001,2001), dtype=int)
 
 def CLCSFast(A,B):
         m = len(A)
@@ -18,121 +11,91 @@ def CLCSFast(A,B):
         matrix.fill(0)
         ghosts.fill(0)
         p = np.zeros(m, dtype=int)
-        p[0] = LCS(A,B,m,n,0)
+        p[0] = LCS(A,B,m,n)
         p[m-1] = p[0]
-        for i in range(1,m+1):
-                for j in range(0,n+1):
+        for i in range(m,-1,-1):
+                for j in range(n,-1,-1):
                         if ghosts[i][j] != 0:
-                                ghosts[i+m][j] = 1
-        ghosts[m][0] = 1
+                                ghosts[i+m-1][j] = 1
         FINDSHORTESTPATHS(A,B,p,m-1,0)
-        min = np.inf
-        print "damn"
+        max = -1*np.inf
         for i in range(0,m):
-                if p[i] < min and p[i] != 0:
-                        min = p[i]
-        return min
+                if p[i] > max:
+                        max = p[i]
+        return max
 
 def FINDSHORTESTPATHS(A,B,p,l,u):
         if l - u <= 1:
                 return
         mid = (l + u)/2
-        print "there"
         p[mid] = SINGLESHORTESTPATH(A,B,len(A),len(B),u,l,mid)
-        print "where"
         FINDSHORTESTPATHS(A,B,p,l,mid)
-        print "uh"
         FINDSHORTESTPATHS(A,B,p,mid,u)
 
-def LCS(A,B,m,n,index):
-        for i in range(index+1,index+m+1):
+
+def LCS(A,B,m,n):
+        for i in range(1,m+1):
                 for j in range(1,n+1):
                         if A[i-1] == B[j-1]:
                                 matrix[i][j] = matrix[i-1][j-1]+1
                         else:
                                 matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
-        ghostFill(A,B,m,n,index)
+        ghostFill(A,B,m,n,0)
         return matrix[m][n]
-    
-#    def LCS(A,B):
-#	m = len(A)
-#	n = len(B)
-#
-#	for i in range(1,m+1):
-#		for j in range(1,n+1):
-#			if A[i-1] == B[j-1]:
-#				arr[i][j] = arr[i-1][j-1]+1
-#			else:
-#				arr[i][j] = max(arr[i-1][j], arr[i][j-1])
-#
-#	return arr[m][n]
 
 def SINGLESHORTESTPATH(A,B,m,n,u,l,mid):
         matrix.fill(0)
-        print u
-        print l
-        print mid
-        for k in range(mid,l+1):
+        outside = 1
+        for k in range(mid,l):
                 if ghosts[k][0] != 0:
                         k += 1
-                        print "0"
         for i in range(k,l):
                 j = 1
-                print "first loop"
                 while j <= n and (ghosts[i][j] == 0):
                         if A[i-1] == B[j-1]:
                                 matrix[i][j] = matrix[i-1][j-1]+1
-                                print "1"
                         else:
                                 matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
-                                print "2"
                         j += 1
                 while j <= n and (ghosts[i][j] != 0):
-                        ghosts[i][j] = np.abs(ghosts[i][j])
                         if A[i-1] == B[j-1]:
                                 matrix[i][j] = matrix[i-1][j-1]+1
-                                print "3"
                         else:
                                 matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
-                                print "4"
                         j += 1
-
-
-        for i in range(l+1,mid+m+1):
+        for i in range(l,mid+m+1):
                 j = 0
-                if ghosts[i][j] != 0:
-                        ghosts[i][j] = -1 * np.abs(ghosts[i][j])
-                j += 1
-                print "second loop"
+                if ghosts[i][j] == 0:
+                        while j <= n and ghosts[i][j] == 0:
+                                j += 1
+                else:
+                        j = 1
                 while j <= n and ghosts[i][j] != 0:
-                        ghosts[i][j] = -1 * np.abs(ghosts[i][j])
-                        print ghosts
-                        print matrix
                         if A[((i-1)%m+1)-1] == B[j-1]:
                                 matrix[i][j] = matrix[i-1][j-1]+1
-                                print "5"
                         else:
-                            matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1]) 
-                            print "6"
+                                matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
                         j += 1
+                if outside == 1:
+                        for k in range (j,n+1):
+                                if ghosts[i][k] != 0:
+                                        outside = 0
+                if outside == 1:
+                        continue
                 while j <= n and ghosts[i][j] == 0:
                         if A[((i-1)%m+1)-1] == B[j-1]:
                                 matrix[i][j] = matrix[i-1][j-1]+1
-                                print "7"
                         else:
                                 matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
-                                print "8"
                         j += 1
-                while j <= n and ghosts[i][j] == 1:
+                while j <= n and ghosts[i][j] != 0:
                         if A[((i-1)%m+1)-1] == B[j-1]:
                                 matrix[i][j] = matrix[i-1][j-1]+1
-                                print "9"
                         else:
-                                matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])                                
-                                print "10"
+                                matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
                         j += 1
         ghostFill(A,B,m,n,mid)
-        return matrix[i][j]
+        return matrix[m+mid][n]
 
 def ghostFill(A,B,m,n,mid):
         i = mid + m
