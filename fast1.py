@@ -20,6 +20,7 @@ def CLCSFast(A,B):
         FINDSHORTESTPATHS(A,B,p,m-1,0)
         max = -1*np.inf
         for i in range(0,m):
+                print(p[i])
                 if p[i] > max:
                         max = p[i]
         return max
@@ -40,6 +41,7 @@ def LCS(A,B,m,n):
                                 matrix[i][j] = matrix[i-1][j-1]+1
                         else:
                                 matrix[i][j] = max(matrix[i-1][j], matrix[i][j-1])
+        print(matrix[i][j])
         ghostFill(A,B,m,n,0)
         return matrix[m][n]
 

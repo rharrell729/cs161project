@@ -13,9 +13,10 @@ def CLCS(A,B):
 	longest = 0
 	m = len(A)
 	for i in range(0,m):
-		temp = cut(A,i)
-		interim = LCS(temp,B)
-		if interim > longest:
+            temp = cut(A,i)
+            interim = LCS(temp,B)
+            print(interim)
+            if interim > longest:
 			longest = interim
 	
 	return longest

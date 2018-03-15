@@ -3,6 +3,36 @@ import numpy as np
 
 arr = np.zeros((2048, 2048), dtype=int)
 
+def CLCSFast(A,B):
+    m = len(A)
+    n = len(B)
+        
+    
+#Step 1: create 3-d array (or matrix) 'p' for storing paths and array 'longest' for storing LCS values of paths
+       # p[index][A-dimension][B-dimension]=1 if path falls on that node
+    p = np.zeros((m+1,m+1,n+1))
+    
+    longest = np.zeros(m+1)
+
+#Step 2: compute p[0] using singleshortestpath (which should be a modified version of LCS) that stores the nodes along the path of p[0] in array p. 
+#Then copy the values of p[0] to p[m]. Also store the length of the path (arr[m][n]) as the current "longest"
+    print(p.shape)
+
+    print(p[0].shape)
+
+    p[0] = SINGLESHORTESTPATH(A,B,0,0, m)
+    p[m] = p[0]
+
+#Step 3: call Findhsortestpaths(A,B, p, 0, m).
+    FINDSHORTESTPATHS(A,B,p,0,m,longest)
+
+#Step 4: iterate through longest[] to find the longest path. Print the longest path.
+    temp = 0
+    for i in range(0, m+1):
+        if longest[i] > temp:
+            temp = longest[i]
+    return (longest[i])
+
 #Iterates recursively through the DP, finding the shortest path and the LCS as each path by calling SINGLESHORTESTPATH at each index of A.
 def FINDSHORTESTPATHS(A,B,p,l,u,longest):
     if (u-l) <= 1:
@@ -46,37 +76,20 @@ def SINGLESHORTESTPATH(A,B,mid,pl,pu):
 			i-=1
         	else:
             		j-=1
+
 	return path, arr[m][n]
 
 
 def main():
-	if len(sys.argv) != 1:
+    if len(sys.argv) != 1:
 		sys.exit('Usage: `python LCS.py < input`')
 	
-	for l in sys.stdin:
-		A,B = l.split()
-		m = len(A)
-		n = len(B)
+    for l in sys.stdin:
+        A,B = l.split()
+        print CLCSFast(A,B)
+    return
 
-#Step 1: create 2-d array (or matrix) 'p' for storing paths and array 'longest' for storing LCS values of paths
-       # p[index][A-dimension][B-dimension]=1 if path falls on that node
-	p = np.zeros((m+1,m+1,n+1))
-	longest = np.zeros(m+1)
 
-#Step 2: compute p[0] using singleshortestpath (which should be a modified version of LCS) that stores the nodes along the path of p[0] in array p. Then copy the values of p[0] to p[m]. Also store the length of the path (arr[m][n]) as the current "longest"
-	p[0] = SINGLESHORTESTPATH(A,B,0,0,m)
-
-#Step 3: call Findhsortestpaths(A,B, p, 0, m).
-	FINDSHORTESTPATHS(A,B,p,0,m,longest)
-
-#Step 4: iterate through longest[] to find the longest path. Print the longest path.
-	temp = 0
-	for i in 0 to m+1
-		if longest[i] > temp
-		temp = longest[i]
-	Print(longest[i])
-
-	return
 
 if __name__ == '__main__':
 	main()
