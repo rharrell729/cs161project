@@ -4,28 +4,21 @@ import numpy as np
 arr = np.zeros((2048, 2048), dtype=int)
 
 
-# p0 is from (0,0) to (m,n)
-# pm is from (m, 0) to (2m, n) 
+#Step 1: create 2-d array (or matrix) 'p' for storing paths
+	#need to figure out how to represent paths
 
-#need to initialize storage for p.
-p=[None]*20
+#Step 2: compute p[0] using singleshortestpath (which should be a modified version of LCS) that stores the nodes along the path of p[0] in array p. Then copy the values of p[0] to p[m]. Also store the length of the path (arr[m][n]) as the current "longest"
 
-#recursive method
-#p and l are int indices
+#Step 3: call the below recursive method on (A,B, p, 0, m). Somwhere in here update "longest" if p[mid] is longer (as returned by singleshortestpath)
 def FINDSHORTESTPATHS(A,B, p,l,u):
     if (u-l) <= 1:
         return 
 	mid = (l+u)/2
 	p[mid] = SINGLESHORTESTPATH(A,B,mid, p[l], p[u])
-#store mid for use as bounds (l and u) in next recursive step. How to store it?? 	
 	FINDSHORTESTPATHS(A,B, p,l,mid)
 	FINDSHORTESTPATHS(A,B, p,mid,u)
 
-
-#LCS needs to be modified to only check the relevant paths: the nested for loops 
-#should only check items within the bounds of the shortest paths explored prior 
-#(stored in the singleshortestpath method). We might need to update the arguments 
-#in 'range' each time we call singleshortest
+#this needs to be modified to create an array of values for the path it will return as it progresses (indices could represent columns, values rows). It also needs to be modified to only look at the indicies within the bounds of pl and pu.
 def SINGLESHORTESTPATH(A,B,mid,pl,pu):
 	m = len(A)
 	n = len(B)
@@ -38,6 +31,8 @@ def SINGLESHORTESTPATH(A,B,mid,pl,pu):
 				arr[i][j] = max(arr[i-1][j], arr[i][j-1])
 
 	return arr[m][n]
+
+#Step 4: Return 'longest' to the main method
 
 def main():
 	if len(sys.argv) != 1:
